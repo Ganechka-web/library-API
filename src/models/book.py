@@ -1,0 +1,15 @@
+from sqlalchemy.orm import Mapped, mapped_column
+
+from core.database import Base
+
+
+class Book(Base):
+    __tablename__ = 'books'
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    title: Mapped[str] = mapped_column(nullable=False)
+    autor: Mapped[str] = mapped_column(nullable=False)
+    publish_year: Mapped[int]
+    isbn: Mapped[str]
+    instances: Mapped[int] = mapped_column(default=1)
+    
