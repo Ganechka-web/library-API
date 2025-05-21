@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import Text
 
 from core.database import Base
 
@@ -12,4 +13,5 @@ class Book(Base):
     publish_year: Mapped[int]
     isbn: Mapped[str]
     instances: Mapped[int] = mapped_column(default=1)
+    description: Mapped[str] = mapped_column(Text, nullable=True)
     
