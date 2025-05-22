@@ -9,6 +9,9 @@ BASE_DIR = Path(__file__).parent.parent.parent
 
 dotenv.load_dotenv(path.join(BASE_DIR, '.env'))
 
+SECRET_KEY = getenv('SECRET_KEY')
+ALGORITHM = getenv('ALGORITHM')
+
 
 class PostgresSettings:
     host: str = getenv('POSTGRES_HOST')
