@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
 from api.endpoints.auth import auth_router
+from api.endpoints.book import book_router
 
 
 app = FastAPI(
@@ -9,3 +10,4 @@ app = FastAPI(
 )
 
 app.include_router(auth_router)
+app.include_router(book_router)
