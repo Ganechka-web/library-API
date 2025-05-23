@@ -6,7 +6,7 @@ from core.database import async_engine
 from repositories.book import BookRepository
 from services.book import BookService
 from dependencies import get_current_user
-from exceptions.services import BookDoesNotExist
+from exceptions.services import BookDoesNotExist, BookISBNAlreadyExists
 from schemas.book import (
     BookOutputSchema,
     BookCreateSchema,
@@ -43,7 +43,13 @@ async def get_one_by_id(
 
 @book_router.post('/create/')
 async def create_one(new_book: BookCreateSchema) -> int:
-    new_book_id = await book_service.create_one(new_book=new_book)
+    try:
+        new_book_id = await book_service.create_one(new_book=new_book)
+    except BookISBNAlreadyExists:
+        raise HTTPException(
+            status.HTTP_409_CONFLICT,
+            detail='Book isbn already exists'
+        )
 
     return new_book_id
 

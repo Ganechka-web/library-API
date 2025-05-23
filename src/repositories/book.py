@@ -1,9 +1,9 @@
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
-from sqlalchemy.exc import NoResultFound
+from sqlalchemy.exc import NoResultFound, IntegrityError
 from sqlalchemy import select
 
 from models.book import Book
-from exceptions.repositories import RowDoesNotExist
+from exceptions.repositories import RowDoesNotExist, RowAlreadyExists
 
 
 class BookRepository:
@@ -33,11 +33,17 @@ class BookRepository:
     
     async def create_one(self, new_book: Book) -> int:
         async with AsyncSession(self.engine) as session:
-            session.add(new_book)
-            await session.flush()
-            new_book_id = new_book.id
+            try:
+                session.add(new_book)
+                await session.flush()
+                new_book_id = new_book.id
 
-            await session.commit()
+                await session.commit()
+            except IntegrityError as e:
+                raise RowAlreadyExists(
+                    f'Row with isbn - {new_book.isbn}, '
+                    'already exists'
+                ) from e
         
         return new_book_id
     

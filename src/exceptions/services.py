@@ -17,3 +17,7 @@ class UserPasswordVerificationFailedError(ServiceError):
 
 class BookDoesNotExist(ServiceError):
     pass
+
+
+class BookISBNAlreadyExists(BookDoesNotExist):
+    pass

@@ -7,3 +7,7 @@ class RepositoryError(BaseError):
 
 class RowDoesNotExist(RepositoryError):
     pass
+
+
+class RowAlreadyExists(RepositoryError):
+    pass

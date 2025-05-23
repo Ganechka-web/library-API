@@ -1,6 +1,6 @@
 from repositories.book import BookRepository
-from exceptions.repositories import RowDoesNotExist
-from exceptions.services import BookDoesNotExist
+from exceptions.repositories import RowDoesNotExist, RowAlreadyExists
+from exceptions.services import BookDoesNotExist, BookISBNAlreadyExists
 from models.book import Book
 from schemas.book import (
     BookOutputSchema,
@@ -32,8 +32,14 @@ class BookService:
         return book
     
     async def create_one(self, new_book: BookCreateSchema) -> int:
-        new_book_orm = Book(**new_book.model_dump())
-        new_book_id = await self.repository.create_one(new_book=new_book_orm)
+        try: 
+            new_book_orm = Book(**new_book.model_dump())
+            new_book_id = await self.repository.create_one(new_book=new_book_orm)
+        except RowAlreadyExists as e:
+            raise BookISBNAlreadyExists(
+                f'Book with isbn - {new_book.isbn}, '
+                'already exists'
+            ) from e
 
         return new_book_id
     
