@@ -16,7 +16,7 @@ from schemas.auth import (
 )
 
 
-auth_router = APIRouter(prefix='/auth')
+auth_router = APIRouter(prefix='/auth', tags=['auth', 'user'])
 auth_repository = AuthRepository(engine=async_engine)
 auth_service = AuthService(repository=auth_repository)
 
