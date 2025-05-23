@@ -11,7 +11,7 @@ class Book(Base):
     title: Mapped[str] = mapped_column(nullable=False)
     autor: Mapped[str] = mapped_column(nullable=False)
     publish_year: Mapped[int]
-    isbn: Mapped[str]
+    isbn: Mapped[str] = mapped_column(unique=True)
     instances: Mapped[int] = mapped_column(default=1)
     description: Mapped[str] = mapped_column(Text, nullable=True)
     
