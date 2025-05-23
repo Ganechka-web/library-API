@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
-from sqlalchemy.exc import DatabaseError
+from sqlalchemy.exc import NoResultFound
 from sqlalchemy import select
 
 from models.user import User
@@ -27,8 +27,9 @@ class AuthRepository:
         async with AsyncSession(self.engine) as session:
             try: 
                 query = select(self.model).where(self.model.id == user_id)
-                user = await session.scalar(query)
-            except DatabaseError as e:
+                result = await session.execute(query)
+                user = result.scalar_one()
+            except NoResultFound as e:
                 raise RowDoesNotExist(
                     f'Row with id - {user_id} does not exist'
                 ) from e
@@ -39,8 +40,9 @@ class AuthRepository:
         async with AsyncSession(self.engine) as session:
             try:
                 query = select(self.model).where(self.model.email == email)
-                user = await session.scalar(query)
-            except DatabaseError as e:
+                result = await session.execute(query)
+                user = result.scalar_one()
+            except NoResultFound as e:
                 raise RowDoesNotExist(
                     f'Row with email - {email} does not exist'
                 ) from e
