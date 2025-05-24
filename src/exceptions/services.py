@@ -21,3 +21,12 @@ class BookDoesNotExist(ServiceError):
 
 class BookISBNAlreadyExists(BookDoesNotExist):
     pass
+
+### reader exceptions ###
+
+class ReaderDoesNotExist(ServiceError):
+    pass
+
+
+class ReaderEmailAlreadyExists(ServiceError):
+    pass
