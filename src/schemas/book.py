@@ -20,7 +20,7 @@ class BookUpdateSchema(BookCreateSchema):
     autor: Optional[str] = None
     publish_year: Optional[int] = Field(ge=1, default=None)
     isbn: Optional[str] = None
-    instances: Optional[int] = Field(ge=1, default=None)
+    instances: Optional[int] = None
     description: Optional[str] = None
 
 
