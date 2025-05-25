@@ -29,7 +29,7 @@ async def get_all() -> list[BookOutputSchema]:
 
 @book_router.get('/{book_id}')
 async def get_one_by_id(
-    book_id = Annotated[int, Path()]
+    book_id: Annotated[int, Path()]
 ) -> BookOutputSchema:
     try:
         book = await book_service.get_one_by_id(book_id=book_id)
