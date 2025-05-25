@@ -1,6 +1,10 @@
 from repositories.book import BookRepository
 from exceptions.repositories import RowDoesNotExist, RowAlreadyExists
-from exceptions.services import BookDoesNotExist, BookISBNAlreadyExists
+from exceptions.services import (
+    BookDoesNotExist, 
+    BookISBNAlreadyExists,
+    BookDoesNotHaveAnyInstancesError
+)
 from models.book import Book
 from schemas.book import (
     BookOutputSchema,
@@ -54,3 +58,36 @@ class BookService:
     async def delete_one(self, book_id: int) -> None:
         book_on_delete = await self.get_one_by_id(book_id=book_id)
         await self.repository.delete_one(book_on_delete=book_on_delete)
+
+    async def increase_book_instances(self, book_id: int, amount: int = 1) -> None:
+        """increase book instances amount and updates book"""
+        try:
+            book_orm = await self.repository.get_one_by_id(book_id=book_id)
+        except RowDoesNotExist as e:
+            raise BookDoesNotExist(
+                f'Book with id - {book_id}'
+                'does not exist'
+            ) from e
+
+        book_orm.instances += amount
+
+        await self.repository.update_one(book_on_update=book_orm)
+
+    async def decrease_book_instances(self, book_id: int, amount: int = 1) -> None:
+        """decrease book instances amount and updates book"""
+        try:
+            book_orm = await self.repository.get_one_by_id(book_id=book_id)
+        except RowDoesNotExist as e:
+            raise BookDoesNotExist(
+                f'Book with id - {book_id}'
+                'does not exist'
+            ) from e
+
+        if book_orm.instances == 0:
+            raise BookDoesNotHaveAnyInstancesError(
+                'Can`t decrease book instances amount less than 0'
+            ) 
+        
+        book_orm.instances -= amount
+
+        await self.repository.update_one(book_on_update=book_orm)
