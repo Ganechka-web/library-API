@@ -12,5 +12,5 @@ class BorrowedBook(Base):
     book_id: Mapped[int]
     reader_id: Mapped[int]
     borrow_at: Mapped[date]
-    return_at: Mapped[date]
+    return_at: Mapped[date] = mapped_column(nullable=True)
     
