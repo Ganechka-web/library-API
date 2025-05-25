@@ -48,7 +48,13 @@ class BookService:
         return new_book_id
     
     async def update_one(self, book_id: int, book_on_update: BookUpdateSchema) -> None:
-        old_book_orm = await self.get_one_by_id(book_id=book_id)
+        try: 
+            old_book_orm = await self.repository.get_one_by_id(book_id=book_id)
+        except RowDoesNotExist as e:
+            raise BookDoesNotExist(
+                f'Book with id - {book_id}'
+                'does not exist'
+            ) from e
 
         for field, value in book_on_update.model_dump(exclude_unset=True).items():
             setattr(old_book_orm, field, value)
