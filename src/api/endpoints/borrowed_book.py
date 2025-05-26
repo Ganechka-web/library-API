@@ -13,6 +13,7 @@ from exceptions.services import (
     BorrowedBookAlreadyBorrowed,
     BorrowedBookAlreadyReturned
 )
+from schemas.borrowed_book import BorrowedBookOutputSchema
 from api.endpoints.book import book_service
 
 
@@ -68,3 +69,15 @@ async def return_one(
             detail='BorrowedBook has already returned'
         )
     
+
+@borrowed_book_router.get('/{reader_id}')
+async def get_all_not_returned(
+    reader_id: Annotated[int, Path()]
+) -> list[BorrowedBookOutputSchema]:
+    not_returned_borrow_books = (
+        await borrowed_book_service.get_all_not_returned_by_reader_id(
+            reader_id=reader_id
+        )
+    )
+
+    return not_returned_borrow_books
