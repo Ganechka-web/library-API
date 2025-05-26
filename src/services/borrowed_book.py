@@ -60,18 +60,20 @@ class BorrowedBookService:
 
         return borrowed_books
 
-    async def get_all_by_reader_id(
+    async def get_all_not_returned_by_reader_id(
         self, reader_id: int
     ) -> list[BorrowedBookOutputSchema]:
         borrowed_books_orm = await self.repository.get_all_by_reader_id(
             reader_id=reader_id
         )
-        borrowed_books = [
+        print(borrowed_books_orm)
+        not_returned_borrowed_books = [
             BorrowedBookOutputSchema.model_validate(borrowed_book)
             for borrowed_book in borrowed_books_orm
+            if borrowed_book.return_at is None
         ]
 
-        return borrowed_books
+        return not_returned_borrowed_books
 
     async def get_all_by_book_id(self, book_id: int) -> list[BorrowedBookOutputSchema]:
         borrowed_books_orm = await self.repository.get_all_by_book_id(book_id=book_id)
@@ -98,7 +100,7 @@ class BorrowedBookService:
     async def create_one(self, book_id: int, reader_id: int) -> int:
         # check whether reader already have got a borrowed_book
         try:
-            self.repository.get_one_by_reader_id_and_book_id(
+            await self.repository.get_one_by_reader_id_and_book_id(
                 reader_id=reader_id, book_id=book_id    
             )
         except RowDoesNotExist:
