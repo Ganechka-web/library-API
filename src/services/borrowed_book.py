@@ -10,6 +10,7 @@ from exceptions.services import (
     BorrowedBookInvalidReturnDateError,
     BorrowedBookUnableToBorrowBook,
     BorrowedBookAlreadyBorrowed,
+    BorrowedBookAlreadyReturned,
     # Book errors
     BookDoesNotHaveAnyInstancesError,
 )
@@ -170,6 +171,11 @@ class BorrowedBookService:
                 f"BorrowedBook with reader_id - {reader_id} "
                 f"and book_id - {book_id} does not exist"
             ) from e
+        
+        if borrowed_book_on_return_orm.return_at is not None:
+            raise BorrowedBookAlreadyReturned(
+                "Unable to borrow book, already returned"
+            )
 
         # increase book instances amount
         await self.book_service.increase_book_instances(

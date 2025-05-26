@@ -10,7 +10,8 @@ from exceptions.services import (
     BorrowedBookCountPerReaderError,
     BorrowedBookUnableToBorrowBook,
     BorrowedBookDoesNotExist,
-    BorrowedBookAlreadyBorrowed
+    BorrowedBookAlreadyBorrowed,
+    BorrowedBookAlreadyReturned
 )
 from api.endpoints.book import book_service
 
@@ -60,5 +61,10 @@ async def return_one(
         raise HTTPException(
             status.HTTP_404_NOT_FOUND,
             detail='BorrowedBook not found'
+        )
+    except BorrowedBookAlreadyReturned:
+        raise HTTPException(
+            status.HTTP_409_CONFLICT,
+            detail='BorrowedBook has already returned'
         )
     

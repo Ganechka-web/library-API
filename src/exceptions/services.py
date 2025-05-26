@@ -55,4 +55,8 @@ class BorrowedBookInvalidReturnDateError(ServiceError):
 
 class BorrowedBookUnableToBorrowBook(ServiceError):
     """raises when book instances is 0"""
+
+
+class BorrowedBookAlreadyReturned(ServiceError):
+    pass
     
